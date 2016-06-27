@@ -53,24 +53,9 @@ $(function() {
 
                             case 'error':
                                 if (data.messages) {
-                                    $.each(data.messages, function(index, error) {
-
-                                        /*
-                                         * use the class as the selector if the input name is an array.
-                                         */
-                                        var selector = (index.indexOf(".") >= 0) ? '.' + index.replace(/\./g, "\\.") : ':input[name=' + index + ']';
-
-                                        $(selector, $form)
-                                                .after('<div class="help-block error">' + error + '</div>')
-                                                .parent()
-                                                .addClass('has-error');
-                                    });
+                                    processFormErrors($form, data.messages);
+                                    return;
                                 }
-
-
-                                var $submitButton = $form.find('input[type=submit]');
-                                toggleSubmitDisabled($submitButton);
-
                                 break;
 
                             default:
@@ -83,9 +68,8 @@ $(function() {
         toggleSubmitDisabled($submitButton);
 
         if ($form.hasClass('payment-form')) {
-            
             clearFormErrors($('.payment-form'));
-            
+
             Stripe.setPublishableKey($form.data('stripe-pub-key'));
 
             var
@@ -95,6 +79,7 @@ $(function() {
                     $cvcNumber = $('.card-cvc'),
                     $expiryMonth = $('.card-expiry-month'),
                     $expiryYear = $('.card-expiry-year');
+
 
             if (!Stripe.validateCardNumber($cardNumber.val())) {
                 showFormError($cardNumber, 'The credit card number appears to be invalid.');
@@ -131,7 +116,7 @@ $(function() {
                         $form.append($('<input type="hidden" name="stripeToken" />').val(token));
                         $form.ajaxSubmit(ajaxFormConf);
                     }
-                    
+
                 });
             } else {
                 showMessage('Please check your card details and try again.');
@@ -146,6 +131,7 @@ $(function() {
     $('a').smoothScroll({
         offset: -60
     });
+
 
     /* Scroll to top */
     $(window).scroll(function() {
@@ -172,13 +158,17 @@ $(function() {
         $('.ticket_holder_email').val($('#order_email').val());
     });
 
+    $('.card-number').payment('formatCardNumber');
+    $('.card-cvc').payment('formatCardCVC');
+
 });
 
 function processFormErrors($form, errors)
 {
     $.each(errors, function (index, error)
     {
-        var $input = $(':input[name=' + index + ']', $form);
+        var selector = (index.indexOf(".") >= 0) ? '.' + index.replace(/\./g, "\\.") : ':input[name=' + index + ']';
+        var $input = $(selector, $form);
 
         if ($input.prop('type') === 'file') {
             $('#input-' + $input.prop('name')).append('<div class="help-block error">' + error + '</div>')
@@ -201,7 +191,7 @@ function processFormErrors($form, errors)
 
 /**
  * Toggle a submit button disabled/enabled - duh!
- * 
+ *
  * @param element $submitButton
  * @returns void
  */
@@ -222,7 +212,7 @@ function toggleSubmitDisabled($submitButton) {
 
 /**
  * Clears given form of any error classes / messages
- * 
+ *
  * @param {Element} $form
  * @returns {void}
  */
@@ -247,7 +237,7 @@ function showFormError($formElement, message) {
 /**
  * Shows users a message.
  * Currently uses humane.js
- * 
+ *
  * @param string message
  * @returns void
  */
@@ -264,7 +254,7 @@ function hideMessage() {
 
 /**
  * Counts down to the given number of seconds
- * 
+ *
  * @param element $element
  * @param int seconds
  * @returns void
