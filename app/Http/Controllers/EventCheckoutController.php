@@ -178,7 +178,7 @@ class EventCheckoutController extends Controller
         }
 
         /*
-         * The 'ticket_order' session stores everything we need to complete the transaction.
+         * The 'ticket_order_{event_id}' session stores everything we need to complete the transaction.
          */
         session()->set('ticket_order_' . $event->id, [
             'validation_rules'        => $validation_rules,
@@ -214,6 +214,9 @@ class EventCheckoutController extends Controller
             ]);
         }
 
+        /*
+         * Maybe display something prettier than this?
+         */
         exit('Please enable Javascript in your browser.');
     }
 
@@ -296,6 +299,15 @@ class EventCheckoutController extends Controller
          * Begin payment attempt before creating the attendees etc.
          * */
         if ($ticket_order['order_requires_payment']) {
+
+            /*
+             * Check if the user has chosen to pay offline
+             * and if they are allowed
+             */
+            if($request->get('pay_offline') && $event->enable_offline_payments) {
+                return $this->completeOrder($event_id);
+            }
+
             try {
 
                 $gateway = Omnipay::create($ticket_order['payment_gateway']->name);
@@ -358,7 +370,8 @@ class EventCheckoutController extends Controller
                 } elseif ($response->isRedirect()) {
 
                     /*
-                     * As we're going off-site for payment we need to store some into in a session
+                     * As we're going off-site for payment we need to store some data in a session so it's available
+                     * when we return
                      */
                     session()->push('ticket_order_' . $event_id . '.transaction_data', $transaction_data);
 
@@ -475,13 +488,14 @@ class EventCheckoutController extends Controller
             $order->first_name = $request_data['order_first_name'];
             $order->last_name = $request_data['order_last_name'];
             $order->email = $request_data['order_email'];
-            $order->order_status_id = config('attendize.order_complete');
+            $order->order_status_id = isset($request_data['pay_offline']) ? config('attendize.order_awaiting_payment') : config('attendize.order_complete');
             $order->amount = $ticket_order['order_total'];
             $order->booking_fee = $ticket_order['booking_fee'];
             $order->organiser_booking_fee = $ticket_order['organiser_booking_fee'];
             $order->discount = 0.00;
             $order->account_id = $event->account->id;
             $order->event_id = $ticket_order['event_id'];
+            $order->is_payment_received = isset($request_data['pay_offline']) ? 0 : 1;
             $order->save();
 
             /*
@@ -605,7 +619,7 @@ class EventCheckoutController extends Controller
             /*
              * Queue up some tasks - Emails to be sent, PDFs etc.
              */
-            Log::info('Firiing the event');
+            Log::info('Firing the event');
             event(new OrderCompletedEvent($order));
 
 
