@@ -14,6 +14,7 @@ Route::get('install', [
     'as'   => 'showInstaller',
     'uses' => 'InstallerController@showInstaller',
 ]);
+
 Route::post('install', [
     'as'   => 'postInstaller',
     'uses' => 'InstallerController@postInstaller',
@@ -113,6 +114,11 @@ Route::group(['prefix' => 'e'], function () {
     Route::get('/{event_id}/embed', [
         'as'   => 'showEmbeddedEventPage',
         'uses' => 'EventViewEmbeddedController@showEmbeddedEvent',
+    ]);
+
+    Route::get('/{event_id}/calendar.ics', [
+        'as'   => 'downloadCalendarIcs',
+        'uses' => 'EventViewController@showCalendarIcs',
     ]);
 
     Route::get('/{event_id}/{event_slug?}', [

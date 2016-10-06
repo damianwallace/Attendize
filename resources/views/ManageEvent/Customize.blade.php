@@ -249,7 +249,7 @@
                                         <td>{{ $affiliate->name }}</td>
                                         <td>{{ $affiliate->visits }}</td>
                                         <td>{{ $affiliate->tickets_sold }}</td>
-                                        <td>{{ money($affiliate->sales_volume, $event->currency->code) }}</td>
+                                        <td>{{ money($affiliate->sales_volume, $event->currency) }}</td>
                                         <td>{{ $affiliate->updated_at->format('M dS H:i A') }}</td>
                                     </tr>
                                 @endforeach
@@ -491,7 +491,7 @@
 
                     </div>
                     <div class="form-group">
-                        {!! Form::label('post_order_display_message', 'Message to display to attendees before after they have completed their order.', array('class'=>'control-label ')) !!}
+                        {!! Form::label('post_order_display_message', 'Message to display to attendees after they have completed their order.', array('class'=>'control-label ')) !!}
 
                         {!!  Form::textarea('post_order_display_message', $event->post_order_display_message, [
                             'class' => 'form-control',

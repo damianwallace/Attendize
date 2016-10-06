@@ -5,6 +5,8 @@
 # Attendize 
 ### Open-source ticket selling and event management platform
 
+[![Join the chat at https://gitter.im/Attendize/Attendize](https://badges.gitter.im/Attendize/Attendize.svg)](https://gitter.im/Attendize/Attendize?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 https://www.attendize.com
 
 > PLEASE NOTE: Attendize is in the early stages of development and therefore is likely to contain bugs and unfinished features. Be wary about using Attendize in a production environment.
@@ -34,9 +36,13 @@ https://www.attendize.com
  - Widget support - embed ticket selling widget into existing websites / WordPress blogs
  - Social sharing 
  - Support multiple payment gateways - Stripe, PayPal & Coinbase so far, with more being added
+ - Support for offline payments
  - Refund payments - partial refund & full refunds
  - Ability to add service charge to tickets
  - Messaging - eg. Email all attendees with X ticket
+ - Public event listings page for organisers
+ - Ability to ask custom questions during checkout
+ - Browser based QR code scanner for door management
     
 ##Upcoming Features
  - Theme support
@@ -46,8 +52,7 @@ https://www.attendize.com
  - Coupon/discount code support
  - Support for more payment providers
  - WordPress Plug-in 
- - Public event listings page for organisers
- - Custom questions during checkout
+
 
 ## Official Documentation
 
@@ -78,7 +83,7 @@ Attendize will be available at `http://localhost:8080` and maildev at `http://lo
 
 ## License
 
-Attendize is open-sourced software licensed under the Attribution Assurance License. See [https://www.attendize.com/licence.php](https://www.attendize.com/licence.php) for further details.
+Attendize is open-sourced software licensed under the Attribution Assurance License. See [https://www.attendize.com/licence.php](https://www.attendize.com/licence.php) for further details. We also have white-label licence options available.
 
 ## Contributors 
 
